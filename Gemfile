@@ -4,4 +4,5 @@ gemspec
 
 group :development do
   gem 'guard-minitest'
+  gem 'rake'
 end
