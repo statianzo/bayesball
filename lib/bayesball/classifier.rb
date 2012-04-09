@@ -2,20 +2,17 @@ module Bayesball
   class Classifier
     STOP_WORDS = IO.read(File.expand_path('../stopwords.txt',__FILE__)).split
 
-    def initialize
-      @categories = {}
-    end
-
-    def categories
-      @categories.keys
+    def initialize(persistence = {})
+      @persistence = persistence
     end
 
     def train(category, payload)
-      counts = (@categories[category] ||= Hash.new(0))
+      counts = @persistence[category] ||= {}
 
       word_counts(payload).each do |word, count|
-        counts[word] += count
+        counts[word] = counts.fetch(word,0) + count
       end
+      @persistence[category] = counts
     end
 
     def word_counts(payload)
@@ -27,11 +24,10 @@ module Bayesball
     end
 
     def score(payload)
-      @categories.reduce(Hash.new(0)) do |memo, (category, counts)|
+      @persistence.reduce(Hash.new(0)) do |memo, (category, counts)|
         total = counts.values.reduce(:+).to_f
         word_counts(payload).each do |word, count|
-          s = counts[word]
-          s = 0.0001 if s <= 0
+          s = counts.fetch(word, 0.0001)
           memo[category] += Math.log(s/total)
         end
         memo

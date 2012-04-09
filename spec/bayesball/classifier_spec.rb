@@ -1,12 +1,7 @@
 require 'spec_helper'
 
 describe Bayesball::Classifier do
-  let(:subject) { Bayesball::Classifier.new }
-
-  it 'should add category on train' do
-    subject.train('basketball', 'The ball went in the hoop')
-    subject.categories.include?('basketball').must_equal true
-  end
+  let(:subject) { Bayesball::Classifier.new(Bayesball::Persistence::Mongo.new(MONGO_URI)) }
 
   it 'should do word counts' do
     result = subject.word_counts('Hello, friend. Hello!')
@@ -35,10 +30,21 @@ describe Bayesball::Classifier do
     Evolving from older bat-and-ball games, an early form of baseball was being played in England by the mid-eighteenth century. This game was brought by immigrants to North America, where the modern version developed. By the late nineteenth century, baseball was widely recognized as the national sport of the United States. Baseball is now popular in North America, parts of Central and South America and the Caribbean, and parts of East Asia.
     In North America, professional Major League Baseball (MLB) teams are divided into the National League (NL) and American League (AL), each with three divisions: East, West, and Central. The major league champion is determined by playoffs that culminate in the World Series. Five teams make the playoffs from each league: the three regular season division winners, plus two wild card teams. Baseball is the leading team sport in both Japan and Cuba, and the top level of play is similarly split between two leagues: Japan's Central League and Pacific League; Cuba's West League and East League. In the National and Central leagues, the pitcher is required to bat, per the traditional rules. In the American, Pacific, and both Cuban leagues, there is a tenth player, a designated hitter, who bats for the pitcher. Each top-level team has a farm system of one or more minor league teams.
     EOF
-    result = subject.classify('the shot did not count because he was traveling')
-    result.must_equal 'basketball'
 
-    result = subject.classify('I want to play Major League Baseball some day')
-    result.must_equal 'baseball'
+    subject.train('racquetball', <<-EOF)
+      Racquetball is a racquet sport played with a hollow rubber ball in an indoor or outdoor court. Joseph Sobek[1] is credited with inventing the modern sport of racquetball in 1950 (the outdoor, one-wall game goes back to at least 1910 in N.Y.C.),[2] adding a stringed racquet to paddleball in order to increase velocity and control. Unlike most racquet sports, such as tennis and badminton, there is no net to hit the ball over, and unlike squash no tin (out of bounds area at the bottom of front wall) to hit the ball above. Also, the court's walls, floor, and ceiling are legal playing surfaces, with the exception of court-specific designated hinders being out-of-bounds.[3] It is very similar to 40x20 handball, which is played in many countries.
+    EOF
+
+    subject.train('football', <<-EOF)
+     Football refers to a number of sports that involve, to varying degrees, kicking a ball with the foot to score a goal. The most popular of these sports worldwide is association football, more commonly known as just "football" or "soccer". Unqualified, the word football applies to whichever form of football is the most popular in the regional context in which the word appears, including association football, as well as American football, Australian rules football, Canadian football, Gaelic football, rugby league, rugby union[1] and other related games. These variations of football are known as football "codes".
+     Various forms of 'football' can be identified in history, often as popular peasant games. Contemporary codes of football can be traced back to the codification of these games at English public schools in the eighteenth and nineteenth century.[2][3] The influence and power of the British Empire allowed these rules of football to spread, including to areas of British influence outside of the directly controlled Empire,[4] though by the end of the nineteenth century, distinct regional codes were already developing: Gaelic Football, for example, deliberately incorporated the rules of local traditional football games in order to maintain their heritage.[5] In 1888, The Football League was founded in England, becoming the first of many professional football competitions. In the twentieth century, the various codes of football have become amongst the most popular team sports in the world.[6]
+    EOF
+
+    subject.train('football', 'field goal')
+
+    subject.classify('the shot did not count because he was traveling').must_equal 'basketball'
+    subject.classify('I want to play Major League Baseball some day').must_equal 'baseball'
+    subject.classify('Hitting a ball made of rubber').must_equal 'racquetball'
+    subject.classify('The winning team is kicking butt. They always make the ball go in the hoop every time').must_equal 'basketball'
   end
 end
