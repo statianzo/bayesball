@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Bayesball::Classifier do
-  let(:subject) { Bayesball::Classifier.new(Bayesball::Persistence::Mongo.new(MONGO_URI)) }
+  let(:subject) { Bayesball::Classifier.new }
 
   it 'should do word counts' do
     result = subject.word_counts('Hello, friend. Hello!')
