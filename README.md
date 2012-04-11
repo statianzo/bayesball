@@ -1,6 +1,7 @@
 # Bayesball
 
-TODO: Write a gem description
+Bayesball is a naive Bayes classifier with support for in memory and mongo
+persistence.
 
 ## Installation
 
@@ -18,7 +19,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+classifier = Bayesball::Classifier.new
+
+classifier.train 'basketball', 'dunk the ball'
+
+classifier.classify 'Slam Dunk!' #=> "basketball"
+```
 
 ## Contributing
 
