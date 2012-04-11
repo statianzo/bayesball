@@ -2,6 +2,7 @@ require "bundler/gem_tasks"
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
+    puts ENV['TERM']
     t.libs = ['spec', 'lib']
-    t.test_files = Dir['spec/**/*_spec.rb']
+    t.pattern = 'spec/**/*_spec.rb'
 end
