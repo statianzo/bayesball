@@ -36,7 +36,7 @@ module Bayesball
 
     def classify(payload)
       s = score(payload)
-      s.sort_by{|k,v| v}.reverse[0][0]
+      s.sort_by{|_,v| v}.map{|k,_| k}.reverse.first
     end
   end
 end

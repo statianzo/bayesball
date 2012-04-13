@@ -47,4 +47,8 @@ describe Bayesball::Classifier do
     subject.classify('Hitting a ball made of rubber').must_equal 'racquetball'
     subject.classify('The winning team is kicking butt. They always make the ball go in the hoop every time').must_equal 'basketball'
   end
+
+  it 'should return nil if cannot classify' do
+    subject.classify('there are no topics').must_be_nil
+  end
 end
