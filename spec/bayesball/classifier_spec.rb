@@ -12,7 +12,12 @@ describe Bayesball::Classifier do
     subject.train('basketball', 'The ball went in the hoop')
     subject.train('baseball', 'He hit another grand slam!')
 
-    result = subject.score('The ball went in the hoop')
+    subject.score('The ball went in the hoop')
+  end
+
+  it 'should accept a seed' do
+    subject.seed('basketball' => { 'hoop' => 1 })
+    subject.classify('hoop').must_equal 'basketball'
   end
 
   it 'should classify' do

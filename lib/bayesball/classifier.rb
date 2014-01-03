@@ -38,5 +38,11 @@ module Bayesball
       s = score(payload)
       s.sort_by{|_,v| v}.map{|k,_| k}.reverse.first
     end
+
+    def seed(content)
+      content.each do |category, counts|
+        @persistence[category] = counts
+      end
+    end
   end
 end
