@@ -34,9 +34,15 @@ module Bayesball
       end
     end
 
-    def classify(payload)
+    def classify(payload, top_how_many=1)
       s = score(payload)
-      s.sort_by{|_,v| v}.map{|k,_| k}.reverse.first
+      unless s.nil?
+        if 1 == top_how_many # NOTE: doing this so that existing interface works as documented
+          s.sort_by{|_,v| v}.map{|k,_| k}.reverse.first
+        else
+          s.sort_by{|_,v| v}.map{|k,_| k}.reverse.slice(0, top_how_many)
+        end
+      end
     end
 
     def seed(content)
