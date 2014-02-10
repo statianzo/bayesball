@@ -37,8 +37,27 @@ describe Bayesball::Classifier do
     EOF
 
     subject.train('racquetball', <<-EOF)
-      Racquetball is a racquet sport played with a hollow rubber ball in an indoor or outdoor court. Joseph Sobek[1] is credited with inventing the modern sport of racquetball in 1950 (the outdoor, one-wall game goes back to at least 1910 in N.Y.C.),[2] adding a stringed racquet to paddleball in order to increase velocity and control. Unlike most racquet sports, such as tennis and badminton, there is no net to hit the ball over, and unlike squash no tin (out of bounds area at the bottom of front wall) to hit the ball above. Also, the court's walls, floor, and ceiling are legal playing surfaces, with the exception of court-specific designated hinders being out-of-bounds.[3] It is very similar to 40x20 handball, which is played in many countries.
+      Racquetball is a racquet sport played with a hollow rubber ball in an indoor or outdoor
+      court. Joseph Sobek[1] is credited with inventing the modern sport of racquetball in
+      1950 (the outdoor, one-wall game goes back to at least 1910 in N.Y.C.),[2] adding a
+      stringed racquet to paddleball in order to increase velocity and control. Unlike most
+      racquet sports, such as tennis and badminton, there is no net to hit the ball over,
+      and unlike squash no tin (out of bounds area at the bottom of front wall) to hit the
+      ball above. Also, the court's walls, floor, and ceiling are legal playing surfaces,
+      with the exception of court-specific designated hinders being out-of-bounds.[3] It is
+      very similar to 40x20 handball, which is played in many countries.
     EOF
+
+
+    subject.train('tennis', <<-EOF)
+      Tennis is a sport people usually play individually against a single opponent (singles)
+      or between two teams of two players each (doubles). Each player uses a racquet that is
+      strung with cord to strike a hollow rubber ball covered with felt over or around a net
+      and into the opponent's court. The object of the game is to play the ball in such a way
+      that the opponent is not able to play a good return.
+      Tennis is played with hollow, fuzzy rubber balls.
+    EOF
+
 
     subject.train('football', <<-EOF)
      Football refers to a number of sports that involve, to varying degrees, kicking a ball with the foot to score a goal. The most popular of these sports worldwide is association football, more commonly known as just "football" or "soccer". Unqualified, the word football applies to whichever form of football is the most popular in the regional context in which the word appears, including association football, as well as American football, Australian rules football, Canadian football, Gaelic football, rugby league, rugby union[1] and other related games. These variations of football are known as football "codes".
@@ -49,8 +68,11 @@ describe Bayesball::Classifier do
 
     subject.classify('the shot did not count because he was traveling').must_equal 'basketball'
     subject.classify('I want to play Major League Baseball some day').must_equal 'baseball'
-    subject.classify('Hitting a ball made of rubber').must_equal 'racquetball'
+    subject.classify('Hitting a ball made of rubber', 2).must_equal ["tennis", "racquetball"]
     subject.classify('The winning team is kicking butt. They always make the ball go in the hoop every time').must_equal 'basketball'
+
+    # Returns an Array when more than one classification is requested
+    subject.classify('Jimmy served the ball into the net.', 2).must_equal ['tennis', 'racquetball']
   end
 
   it 'should return nil if cannot classify' do

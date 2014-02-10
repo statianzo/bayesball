@@ -25,6 +25,14 @@ classifier = Bayesball::Classifier.new
 classifier.train 'basketball', 'dunk the ball'
 
 classifier.classify 'Slam Dunk!' #=> "basketball"
+
+classifier.train 'football', 'kicked the ball through the up-rights'
+classifier.train 'soccer', 'kicked the ball into the net'
+classifier.train 'hockey', 'hit the puck into the net'
+
+# 2nd parameter is top_how_many classifications to return
+classifier.classify 'Jimmy kicked the ball', 2 #=> ["soccer", "football"]
+
 ```
 
 ## Contributing
